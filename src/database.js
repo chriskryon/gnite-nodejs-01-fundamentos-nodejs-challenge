@@ -1,65 +1,70 @@
-import fs from "node:fs/promises";
+import fs from 'node:fs/promises';
 
-const databasePath = new URL("./database/db.json", import.meta.url);
+const databasePath = new URL('./database/db.json', import.meta.url);
 
 export class Database {
-	#database = {};
+  #database = {};
 
-	constructor() {
-		fs.readFile(databasePath, "utf8")
-			.then((data) => {
-				this.#database = JSON.parse(data);
-			})
-			.catch((error) => {
-				this.#persist();
-			});
-	}
+  constructor() {
+    fs.readFile(databasePath, 'utf8')
+      .then((data) => {
+        this.#database = JSON.parse(data);
+      })
+      .catch((error) => {
+        this.#persist();
+      });
+  }
 
-	#persist = () => {
-		fs.writeFile(databasePath.pathname, JSON.stringify(this.#database));
-	};
+  #persist = () => {
+    fs.writeFile(databasePath.pathname, JSON.stringify(this.#database));
+  };
 
-	select(table, search) {
-		let data = this.#database[table] ?? [];
+  find(table, id) {
+    return this.#database[table].find((item) => item.id === id);
+  }
 
-		if (search) {
-			data = data.filter((item) => {
-				return Object.entries(search).some(([key, value]) => {
-					return item[key].toLowerCase().includes(value.toLowerCase());
-				});
-			});
-		}
+  select(table, search) {
+    let data = this.#database[table] ?? [];
 
-		return data;
-	}
+    if (search) {
+      data = data.filter((item) => {
+        return Object.entries(search).some(([key, value]) => {
+          return item[key].toLowerCase().includes(value.toLowerCase());
+        });
+      });
+    }
 
-	insert(table, data) {
-		if (Array.isArray(this.#database[table])) {
-			this.#database[table].push(data);
-		} else {
-			this.#database[table] = [data];
-		}
+    return data;
+  }
 
-		this.#persist();
+  insert(table, data) {
+    if (Array.isArray(this.#database[table])) {
+      this.#database[table].push(data);
+    } else {
+      this.#database[table] = [data];
+    }
 
-		return data;
-	}
+    this.#persist();
 
-	update(table, id, data) {
-		const rowIndex = this.#database[table].findIndex((item) => item.id === id);
+    return data;
+  }
 
-		if (rowIndex >= -1) {
-			this.#database[table][rowIndex] = { id, ...data };
-			this.#persist();
-		}
-	}
+  update(table, id, data) {
+    const rowIndex = this.#database[table].findIndex((item) => item.id === id);
 
-	delete(table, id) {
-		const rowIndex = this.#database[table].findIndex((item) => item.id === id);
+    if (rowIndex >= -1) {
+      this.#database[table][rowIndex] = { id, ...data };
+      this.#persist();
+    }
+  }
 
-		if (rowIndex >= -1) {
-			this.#database[table].splice(rowIndex, 1);
-			this.#persist();
-		}
-	}
+  delete(table, id) {
+    console.log('delete', table, id);
+    const rowIndex = this.#database[table].findIndex((item) => item.id === id);
+
+    if (rowIndex >= -1) {
+      this.#database[table].splice(rowIndex, 1);
+      this.#persist();
+    }
+  }
 }
