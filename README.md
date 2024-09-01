@@ -26,7 +26,7 @@ Este projeto é uma solução para o desafio proposto no Ignite, onde foi desenv
 
 ### Rotas da API
 
-`POST /tasks`: Cria uma nova tarefa.
-`GET /tasks`: Lista todas as tarefas.
-`PUT /tasks/:id`: Atualiza uma tarefa pelo ID.
-`DELETE /tasks/:id`: Deleta uma tarefa pelo ID.
+- `POST /tasks`: Cria uma nova tarefa.
+- `GET /tasks`: Lista todas as tarefas.
+- `PUT /tasks/:id`: Atualiza uma tarefa pelo ID.
+- `DELETE /tasks/:id`: Deleta uma tarefa pelo ID.
